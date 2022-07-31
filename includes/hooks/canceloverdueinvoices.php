@@ -5,7 +5,7 @@ use Illuminate\Database\Capsule\Manager as Capsule;
 /**
  * Cancel Overdue Invoices Hook
  *
- * A helper that automatically cancels invoices that are overdue by a defined amount of days.
+ * A simple hook that automatically cancels invoices that are overdue by a defined amount of days.
  * 
  * You can define the duration (in days) before invoices are cancelled below.
  *
