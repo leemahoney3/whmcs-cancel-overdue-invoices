@@ -1,11 +1,11 @@
 <?php
 
-use Illuminate\Database\Capsule\Manager as Capsule;
+use WHMCS\Billing\Invoice;
 
 /**
  * Cancel Overdue Invoices Hook
  *
- * A simple hook that automatically cancels invoices that are overdue by a defined amount of days.
+ * A helper that automatically cancels invoices that are overdue by a defined amount of days.
  * 
  * You can define the duration (in days) before invoices are cancelled below.
  *
@@ -13,7 +13,7 @@ use Illuminate\Database\Capsule\Manager as Capsule;
  * @author     Lee Mahoney <lee@leemahoney.dev>
  * @copyright  Copyright (c) Lee Mahoney 2022
  * @license    MIT License
- * @version    1.0.0
+ * @version    1.0.2
  * @link       https://leemahoney.dev
  */
 
@@ -27,13 +27,13 @@ function cancel_overdue_invoices($vars) {
     $duration = 90;
 
     # Get all invoices that are unpaid and meet the criteria
-    $invoices = Capsule::table('tblinvoices')->where('status', 'Unpaid')->where('duedate', '<=', date('Y-m-d', strtotime("-{$duration} days")))->get();
+    $invoices = Invoice::where('status', 'Unpaid')->where('duedate', '<=', date('Y-m-d', strtotime("-{$duration} days")))->get();
 
     # Loop through the invoices
     foreach ($invoices as $invoice) {
 
         # Update their statuses
-        Capsule::table('tblinvoices')->where('id', $invoice->id)->update([
+        Invoice::where('id', $invoice->id)->update([
             'status' => 'Cancelled'
         ]);
 
@@ -42,3 +42,5 @@ function cancel_overdue_invoices($vars) {
 }
 
 add_hook('DailyCronJob', 1, 'cancel_overdue_invoices');
+
+//add_hook('AfterCronJob', 1, 'cancel_overdue_invoices');
